@@ -1,0 +1,431 @@
+1. Contour Plots
+import numpy as np
+import matplotlib.pyplot as plt
+# Define x and y values
+x = np.linspace(-5, 5, 100)
+y = np.linspace(-5, 5, 100)
+# Create a grid
+X, Y = np.meshgrid(x, y)
+# Define the function
+Z = X**2 + Y**2
+# Create contour plot
+plt.contour(X, Y, Z)
+# Add labels
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.title("Contour Plot of Z = X² + Y²")
+# Display plot
+plt.show()
+
+
+2. Fibonacci Search
+ef f(x):
+ return (x - 2) ** 2
+def fibonacci_search(a, b, n):
+ # Generate Fibonacci numbers
+ fib = [1, 1]
+ for i in range(2, n + 1):
+ fib.append(fib[i - 1] + fib[i - 2])
+ # Initial points
+ k = 1
+ x1 = a + (fib[n - 2] / fib[n]) * (b - a)
+ x2 = a + (fib[n - 1] / fib[n]) * (b - a)
+ f1 = f(x1)
+ f2 = f(x2)
+ while k < n - 1:
+ if f1 > f2:
+ a = x1
+ x1 = x2
+ f1 = f2
+ x2 = a + (fib[n - k - 1] / fib[n - k]) * (b - a)
+ f2 = f(x2)
+ else:
+ b = x2
+ x2 = x1
+ f2 = f1
+ x1 = a + (fib[n - k - 2] / fib[n - k]) * (b - a)
+ f1 = f(x1)
+ k = k + 1
+ minimum = (a + b) / 2
+ print("Minimum point =", minimum)
+ print("Minimum value =", f(minimum))
+# Call the function
+fibonacci_search(0, 5, 10)
+
+
+3. Golden Section Search
+import numpy as np
+def f(x):
+ return (x - 2) ** 2
+def golden_section_search(a, b, tolerance):
+ golden_ratio = (np.sqrt(5) - 1) / 2
+ x1 = b - golden_ratio * (b - a)
+ x2 = a + golden_ratio * (b - a)
+ f1 = f(x1)
+ f2 = f(x2)
+ while abs(b - a) > tolerance:
+ if f1 > f2:
+ a = x1
+ x1 = x2
+ f1 = f2
+ x2 = a + golden_ratio * (b - a)
+ f2 = f(x2)
+ else:
+ b = x2
+ x2 = x1
+ f2 = f1
+ x1 = b - golden_ratio * (b - a)
+ f1 = f(x1)
+ minimum = (a + b) / 2
+ print("Minimum point =", minimum)
+ print("Minimum value =", f(minimum))
+golden_section_search(0, 5, 0.001)
+
+
+4. Gradient Descent
+# Function
+def f(x):
+ return x**2
+# Derivative of function
+def gradient(x):
+ return 2*x
+# Initial value
+x = 10
+# Learning rate
+learning_rate = 0.1
+# Number of iterations
+iterations = 10
+print("Gradient Descent")
+for i in range(iterations):
+ grad = gradient(x)
+ # Update x
+ x = x - learning_rate * grad
+ print("Iteration", i + 1, ": x =", round(x, 4),
+ "f(x) =", round(f(x), 4))
+print("\nMinimum value occurs approximately at x =", round(x, 4))
+
+5. Quasi-Newton Method to Find Local Maxima
+import numpy as np
+from scipy.optimize import minimize
+# Function whose maximum is required
+def f(x):
+ return -(x[0] - 3)**2 + 9
+# To find maximum, minimize the negative of the function
+def objective(x):
+ return -f(x)
+# Initial value
+x0 = [0]
+# Quasi-Newton method: BFGS
+result = minimize(objective, x0, method='BFGS')
+# Display result
+print("Quasi-Newton Method (BFGS)")
+print("--------------------------------")
+print("Optimal x =", round(result.x[0], 4))
+print("Maximum value =", round(f(result.x), 4))
+print("Number of iterations =", result.nit)
+print("Success =", result.success)
+
+
+6. Adagrad, RMSprop and Adadelta
+import math
+# Function: f(x) = x^2
+# Gradient: f'(x) = 2x
+x = 10.0
+learning_rate = 1.0
+epsilon = 1e-8
+G = 0.0
+print("AdaGrad Optimization")
+print("--------------------")
+for i in range(10):
+ # Calculate gradient
+ gradient = 2 * x
+ # Accumulate squared gradient
+ G = G + gradient ** 2
+ # Update x
+ x = x - (learning_rate / (math.sqrt(G) + epsilon)) * gradient
+ print("Iteration", i + 1,
+ ": x =", round(x, 4),
+ "f(x) =", round(x ** 2, 4))
+print("\nFinal x =", round(x, 4))
+print("Minimum value =", round(x ** 2, 4))
+# ---------------- RMSprop ----------------
+x = 10.0
+learning_rate = 0.1
+decay = 0.9
+E = 0.0
+print("\\nRMSprop Optimization")
+print("--------------------")
+for i in range(10):
+ gradient = 2 * x
+ E = decay * E + (1 - decay) * gradient ** 2
+ x = x - (learning_rate / (math.sqrt(E) + epsilon)) * gradient
+ print("Iteration", i + 1,
+ ": x =", round(x, 4),
+ "f(x) =", round(x ** 2, 4))
+# ---------------- Adadelta ----------------
+x = 10.0
+rho = 0.95
+eps = 1e-6
+Eg = 0.0
+Edx = 0.0
+print("\\nAdadelta Optimization")
+print("---------------------")
+for i in range(10):
+ gradient = 2 * x
+ Eg = rho * Eg + (1 - rho) * gradient ** 2
+ dx = -(math.sqrt(Edx + eps) / math.sqrt(Eg + eps)) * gradient
+ Edx = rho * Edx + (1 - rho) * dx ** 2
+ x = x + dx
+ print("Iteration", i + 1,
+ ": x =", round(x, 4),
+ "f(x) =", round(x ** 2, 4))
+
+7. Radial Basis Functions using Surrogate Modelling
+import numpy as np
+import matplotlib.pyplot as plt
+# Training data
+X = np.array([0, 1, 2, 3, 4, 5])
+y = np.sin(X)
+# Gaussian Radial Basis Function
+def rbf(x, center, epsilon=1.0):
+ return np.exp(-((x - center) / epsilon) ** 2)
+# Create RBF matrix
+Phi = np.zeros((len(X), len(X)))
+for i in range(len(X)):
+ for j in range(len(X)):
+ Phi[i, j] = rbf(X[i], X[j])
+# Calculate weights
+weights = np.linalg.solve(Phi, y)
+# Prediction function
+def predict(x):
+ result = 0
+ for i in range(len(X)):
+ result += weights[i] * rbf(x, X[i])
+ return result
+# Test points
+X_test = np.linspace(0, 5, 100)
+y_pred = np.array([predict(x) for x in X_test])
+# Display some predictions
+print("RBF Surrogate Model")
+print("-------------------")
+for x in [0.5, 1.5, 2.5, 3.5, 4.5]:
+ print("x =", x, "Predicted =", predict(x))
+# Plot
+plt.scatter(X, y, label="Actual Data")
+plt.plot(X_test, y_pred, label="RBF Surrogate")
+plt.xlabel("X")
+plt.ylabel("Function Value")
+plt.title("Radial Basis Function Surrogate Model")
+plt.legend()
+plt.show()
+
+
+8. Random Forest in Surrogate Model
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestRegressor
+# Objective function
+def objective_function(x):
+ return x**2 + np.sin(x)
+# Generate sample points
+X = np.linspace(-5, 5, 30).reshape(-1, 1)
+# Calculate actual function values
+y = objective_function(X.ravel())
+# Create Random Forest surrogate model
+model = RandomForestRegressor(
+ n_estimators=100,
+ random_state=42
+)
+# Train the model
+model.fit(X, y)
+# Test points
+X_test = np.linspace(-5, 5, 200).reshape(-1, 1)
+# Predict using surrogate model
+y_pred = model.predict(X_test)
+# Display predictions
+print("Random Forest Surrogate Model")
+print("-----------------------------")
+test_values = [-4, -2, 0, 2, 4]
+for x in test_values:
+ prediction = model.predict([[x]])[0]
+ actual = objective_function(x)
+ print("x =", x)
+ print("Actual Value =", actual)
+ print("Predicted Value =", prediction)
+ print()
+# Plot actual function and surrogate model
+plt.scatter(X, y, label="Sample Data")
+plt.plot(X_test, objective_function(X_test.ravel()),
+ label="Actual Function")
+plt.plot(X_test, y_pred,
+ label="Random Forest Surrogate")
+plt.xlabel("X")
+plt.ylabel("Function Value")
+plt.title("Random Forest Surrogate Model")
+plt.legend()
+plt.show()
+
+
+9. Gaussian Process and its Application
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import RBF, ConstantKernel
+# Objective function
+def objective_function(x):
+ return x**2 + np.sin(x)
+# Training data
+X = np.array([-4, -3, -2, -1, 0, 1, 2, 3, 4]).reshape(-1, 1)
+# Function values
+y = objective_function(X.ravel())
+# Create Gaussian Process kernel
+kernel = ConstantKernel(1.0) * RBF(length_scale=1.0)
+# Create Gaussian Process model
+model = GaussianProcessRegressor(
+ kernel=kernel,
+ random_state=42
+)
+# Train the model
+model.fit(X, y)
+# Test points
+X_test = np.linspace(-5, 5, 100).reshape(-1, 1)
+# Prediction
+y_pred, y_std = model.predict(X_test, return_std=True)
+# Display predictions
+print("Gaussian Process Surrogate Model")
+print("--------------------------------")
+test_values = [-3.5, -1.5, 0.5, 1.5, 3.5]
+for x in test_values:
+ prediction, uncertainty = model.predict(
+ [[x]],
+ return_std=True
+ )
+ print("x =", x)
+ print("Predicted Value =", prediction[0])
+ print("Uncertainty =", uncertainty[0])
+ print()
+# Plot actual function
+plt.plot(
+ X_test,
+ objective_function(X_test.ravel()),
+ label="Actual Function"
+)
+# Plot GP prediction
+plt.plot(
+ X_test,
+ y_pred,
+ label="GP Prediction"
+)
+# Plot uncertainty
+plt.fill_between(
+ X_test.ravel(),
+ y_pred - 2 * y_std,
+ y_pred + 2 * y_std,
+ alpha=0.2,
+ label="95% Confidence Interval"
+)
+# Training points
+plt.scatter(
+ X,
+ y,
+ label="Training Data"
+)
+plt.xlabel("X")
+plt.ylabel("Function Value")
+plt.title("Gaussian Process Surrogate Model")
+plt.legend()
+plt.show()
+
+
+10. Path Finding using Ant Colony Optimization
+import numpy as np
+import random
+# Nodes
+nodes = ['A', 'B', 'C', 'D', 'E', 'F']
+# Distance matrix
+distance = np.array([
+ [0, 2, 4, 0, 0, 0], # A
+ [2, 0, 1, 3, 0, 0], # B
+ [4, 1, 0, 0, 2, 0], # C
+ [0, 3, 0, 0, 1, 5], # D
+ [0, 0, 2, 1, 0, 2], # E
+ [0, 0, 0, 5, 2, 0] # F
+])
+# Parameters
+num_ants = 20
+iterations = 50
+alpha = 1
+beta = 2
+evaporation = 0.5
+# Initial pheromone
+pheromone = np.ones((6, 6))
+# Source and destination
+source = 0 # A
+destination = 5 # F
+def find_path():
+ current = source
+ path = [current]
+ while current != destination:
+ # Find connected nodes
+ neighbors = [
+ i for i in range(6)
+ if distance[current][i] > 0 and i not in path
+ ]
+ if not neighbors:
+ return None
+ # Calculate probability
+ probabilities = []
+ for next_node in neighbors:
+ tau = pheromone[current][next_node]
+ eta = 1 / distance[current][next_node]
+ probability = (tau ** alpha) * (eta ** beta)
+ probabilities.append(probability)
+ # Normalize probabilities
+ probabilities = np.array(probabilities)
+ probabilities = probabilities / probabilities.sum()
+ # Select next node
+ next_node = random.choices(
+ neighbors,
+ weights=probabilities,
+ k=1
+ )[0]
+ path.append(next_node)
+ current = next_node
+ return path
+best_path = None
+best_length = float('inf')
+# ACO iterations
+for iteration in range(iterations):
+ paths = []
+ # Generate paths
+ for ant in range(num_ants):
+ path = find_path()
+ if path is not None:
+ length = 0
+ for i in range(len(path) - 1):
+ length += distance[path[i]][path[i + 1]]
+ paths.append((path, length))
+ # Store best path
+ if length < best_length:
+ best_length = length
+ best_path = path
+ # Evaporation
+ pheromone *= (1 - evaporation)
+ # Deposit pheromone
+ for path, length in paths:
+ deposit = 1 / length
+ for i in range(len(path) - 1):
+ a = path[i]
+ b = path[i + 1]
+ pheromone[a][b] += deposit
+ pheromone[b][a] += deposit
+# Display result
+print("Ant Colony Optimization")
+print("-----------------------")
+print("Source :", nodes[source])
+print("Destination :", nodes[destination])
+print("Best Path :", end=" ")
+for node in best_path:
+ print(nodes[node], end=" ")
+print()
+print("Path Length :", best_length)
