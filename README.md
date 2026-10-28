@@ -1,2 +1,2 @@
 # practical
-all
+
